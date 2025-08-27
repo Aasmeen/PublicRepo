@@ -1,3 +1,4 @@
 from django.contrib import admin
+from apps.album.models import Album
 
-# Register your models here.
+admin.site.register(Album)
