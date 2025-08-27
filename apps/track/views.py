@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from apps.track.models import Track
+from apps.track.serializer import TrackSerializer
+
+
+class TrackViewSets(ModelViewSet):
+    queryset = Track.objects.all()
+    serializer_class = TrackSerializer

@@ -9,7 +9,7 @@ class Album(TimeStampedModel):
     description = models.TextField(blank=True, help_text="Album description")
 
     def __str__(self) -> str:
-        return f"{self.title} - {self.artist.name}"
+        return f"{self.title}"
     
     @property
     def track_count(self):

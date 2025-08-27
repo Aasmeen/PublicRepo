@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 from django.db import models
 from rest_framework.exceptions import ValidationError
 
@@ -8,6 +9,7 @@ from apps.track.models import Track
 class PlayList(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, help_text="Playlist name")
+    tracks = models.ManyToManyField(Track, through='PlaylistTracks')
 
     class Meta:
         unique_together = ['user', 'name']
@@ -18,12 +20,16 @@ class PlayList(TimeStampedModel):
         ).exclude(id=self.id).exists():
             raise ValidationError("A user cannot have same plalist name")
 
-class PlaylistTracks(TimeStampedModel):
+
+class PlaylistTracks(models.Model):
     playlist = models.ForeignKey(PlayList, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    track_order = models.PositiveIntegerField(
+        validators=[MinValueValidator(1)], help_text="Ordering in the Playlist", default=1
+    )
 
     class Meta:
-        unique_together = ['playlist', 'track']
+        unique_together = ['playlist', 'track', 'track_order']
 
     def clean(self):
         if PlaylistTracks.objects.filter(
